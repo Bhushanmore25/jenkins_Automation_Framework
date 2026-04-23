@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        maven 'Maven3'
-        jdk 'JDK8'
-    }
 
     environment {
         JMETER_HOME = "D:\\Capgemini\\ApacheJemter\\apache-jmeter-5.6.3"
