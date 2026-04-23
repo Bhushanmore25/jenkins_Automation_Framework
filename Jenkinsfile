@@ -9,7 +9,7 @@ pipeline {
 
         stage('Checkout Code') {
             steps {
-                git 'https://github.com/Bhushanmore25/jenkins_Automation_Framework.git'
+                git branch: 'main', url: 'https://github.com/Bhushanmore25/jenkins_Automation_Framework.git'
             }
         }
 
