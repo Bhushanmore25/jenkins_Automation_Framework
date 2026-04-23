@@ -1,7 +1,6 @@
 pipeline {
     agent any
 
-
     environment {
         JMETER_HOME = "D:\\Capgemini\\ApacheJemter\\apache-jmeter-5.6.3"
     }
@@ -10,26 +9,27 @@ pipeline {
 
         stage('Checkout Code') {
             steps {
-                git branch: 'main', url: 'https://github.com/Bhushanmore25/jenkins_Automation_Framework.git'
+                git 'https://github.com/Bhushanmore25/jenkins_Automation_Framework.git'
             }
         }
 
-        stage('Build Project') {
+        stage('Verify Environment') {
             steps {
-                bat 'mvn clean compile'
+                bat 'java -version'
+                bat 'mvn -version'
             }
         }
 
-        stage('Verify Selenium Server') {
+        stage('Verify Selenium Server (localhost)') {
             steps {
                 echo 'Checking Selenium Grid on localhost...'
-                bat 'curl http://localhost:4444/status'
+                bat 'powershell -Command "(Invoke-WebRequest http://localhost:4444/status).StatusCode"'
             }
         }
 
-        stage('Run Tests') {
+        stage('Clean & Test') {
             steps {
-                bat 'mvn test'
+                bat 'mvn clean test'
             }
         }
 
@@ -41,13 +41,13 @@ pipeline {
 
         stage('Generate Allure Report') {
             steps {
-                bat 'allure generate target/allure-results --clean -o target/allure-report'
+                bat 'allure generate allure-results --clean -o allure-report'
             }
         }
 
         stage('Publish Allure Report') {
             steps {
-                allure includeProperties: false, jdk: '', results: [[path: 'target/allure-results']]
+                allure includeProperties: false, jdk: '', results: [[path: 'allure-results']]
             }
         }
     }
