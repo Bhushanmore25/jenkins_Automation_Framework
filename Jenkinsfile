@@ -1,6 +1,7 @@
 pipeline {
     agent any
 
+
     environment {
         JMETER_HOME = "D:\\Capgemini\\ApacheJemter\\apache-jmeter-5.6.3"
     }
@@ -13,23 +14,22 @@ pipeline {
             }
         }
 
-        stage('Verify Environment') {
+        stage('Build Project') {
             steps {
-                bat 'java -version'
-                bat 'mvn -version'
+                bat 'mvn clean compile'
             }
         }
 
-        stage('Verify Selenium Server (localhost)') {
+        stage('Verify Selenium Server') {
             steps {
                 echo 'Checking Selenium Grid on localhost...'
-                bat 'powershell -Command "(Invoke-WebRequest http://localhost:4444/status).StatusCode"'
+                bat 'curl http://localhost:4444/status'
             }
         }
 
-        stage('Clean & Test') {
+        stage('Run Tests') {
             steps {
-                bat 'mvn clean test'
+                bat 'mvn test'
             }
         }
 
@@ -47,7 +47,7 @@ pipeline {
 
         stage('Publish Allure Report') {
             steps {
-                allure includeProperties: false, jdk: '', results: [[path: 'allure-results']]
+                allure includeProperties: false, jdk: '', results: [[path: 'target/allure-results']]
             }
         }
     }
